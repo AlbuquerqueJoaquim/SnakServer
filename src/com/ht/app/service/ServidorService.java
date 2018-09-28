@@ -77,9 +77,12 @@ public class ServidorService {
             
             ChatMessage message = null;
             try {
+                
+                //realizando um cast para o readObject se converta em chatmessage
                 while ((message = (ChatMessage) input.readObject()) != null) {
                     Action action = message.getAction();
 
+                    //pedido de conexão
                     if (action.equals(Action.CONNECT)) {
                         boolean isConnect = connect(message, output);
                         if (isConnect) {
