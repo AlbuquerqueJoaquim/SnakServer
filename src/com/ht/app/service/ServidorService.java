@@ -94,7 +94,7 @@ public class ServidorService {
                         sendOnlines();
                         return;
                     } else if (action.equals(Action.SEND_ONE)) {
-                        sendOne(message);
+                        sendOne(message, output);
                     } else if (action.equals(Action.SEND_ALL)) {
                         sendAll(message);
                     }
@@ -113,22 +113,29 @@ public class ServidorService {
 
     //
     private boolean connect(ChatMessage message, ObjectOutputStream output) {
+        //não tem nenhum cliente logado no servidor
         if (mapOnlines.size() == 0) {
             message.setText("YES");
             send(message, output);
             return true;
         }
 
-        
-        if (mapOnlines.containsKey(message.getName())) {
-            message.setText("NO");
-            send(message, output);
-            return false;
-        } else {
-            message.setText("YES");
-            send(message, output);
-            return true;
+        //a lista possui pelo menos um cliente add, então verificar se esse cliente não e o mesmo
+        for (Map.Entry<String, ObjectOutputStream> kv : mapOnlines.entrySet()) {
+           if (kv.getKey().equals(message.getName())){
+               message.setText("NO");
+               sendOne(message, output);
+               return false;
+           }else {
+               message.setText("YES");
+               sendOne(message, output);
+               
+               return true;
+           }
+            
         }
+        //não ira acontecer
+        return false;
     }
 
     private void disconnect(ChatMessage message, ObjectOutputStream output) {
@@ -151,7 +158,7 @@ public class ServidorService {
         }
     }
 
-    private void sendOne(ChatMessage message) {
+    private void sendOne(ChatMessage message, ObjectOutputStream output) {
         for (Map.Entry<String, ObjectOutputStream> kv : mapOnlines.entrySet()) {
             if (kv.getKey().equals(message.getNameReserved())) {
                 try {
