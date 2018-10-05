@@ -138,6 +138,7 @@ public class ServidorService {
         return false;
     }
 
+    //disconectando do servidor
     private void disconnect(ChatMessage message, ObjectOutputStream output) {
         mapOnlines.remove(message.getName());
 
@@ -147,6 +148,7 @@ public class ServidorService {
 
         sendAll(message);
 
+        //msg quando deixar o snak 
         System.out.println("User " + message.getName() + " sai da sala");
     }
 
